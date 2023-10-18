@@ -28,9 +28,13 @@ class RelayController:
         if not (fst_ltr.lower() == "r" and (lst_ltr.lower() in ["n", "f"])):
             print("Wrong instruction! Please review the command format.")
             return
+        
+        if(rly_num.isnumeric()==False):
+            print("Failed! Relay number out of range.")
+            return
 
         rly_num = int(rly_num)
-        if rly_num == 0:
+        if (rly_num == 0):
             print("Failed! Relay number out of range.")
             return
 
