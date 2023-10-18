@@ -1,0 +1,115 @@
+import smbus
+import time
+
+empty_list = []
+bus = smbus.SMBus(1)
+
+d = int(input("enter number of I2C devices: "))
+max_device=d
+D = []
+V = []
+for i in range(0,d):
+    s = input("enter address for device no. {}: ".format(i+1))
+    v = 0xFF
+    D.append(s)
+    V.append(v)
+    bus.write_byte(int(D[i],16),V[i])
+    #print(i)
+
+
+print(D)    
+print(V)
+
+
+while True:
+    try:
+
+        command = (input("enter Relay command (format: RxxN or RxxF): "))
+        print(command)
+
+        fst_ltr=command[0]
+        rly_num=command[1:-1]
+        lst_ltr=command[-1]
+
+        if (len(command)<=2)or((fst_ltr!="R")and(fst_ltr!="r")):
+            print("Wrong instruction! Plesae review command format. ")
+
+        else:
+            rly_num=int(rly_num)
+            module_num=(rly_num//8)
+            #print("module_num: ",module_num)
+            pin_num=(rly_num%8)
+            print(pin_num)
+            
+            if (module_num>max_device):
+                print("Failed! Relay number out of range. ")
+                
+            else:    
+                if (((lst_ltr!="N")and(lst_ltr!="n"))and((lst_ltr!="F")and(lst_ltr!="f"))):
+                    print("Wrong instruction! Plesae review command format.")
+                    
+                else:
+                    if((lst_ltr=="N")or(lst_ltr=="n")):
+                        print("old",bin(V[module_num]))
+                        V[module_num] &= ~(1<<(pin_num-1))
+                        print("new",bin(V[module_num]))
+                        bus.write_byte(int(D[module_num],16),V[module_num])
+
+                                        
+                    if((lst_ltr=="F")or(lst_ltr=="f")):
+                        print("old",bin(V[module_num]))
+                        V[module_num] |= (1<<(pin_num-1))
+                        a=0b11111111
+                        print("new",bin(V[module_num]))
+                        bus.write_byte(int(D[module_num],16),V[module_num])
+
+    except KeyboardInterrupt:						# enable interrupt using "ctrl+c" 
+        print ("Interrupted")
+        break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # var = int(input("")
+    # D = bytearray(D)
+    # s = int(D[0],16)
+    # s1 = int(D[1],16)
+    # print(s)
+    # print((D[0].encode('utf-8')))
+    # print(type(hex(D[0])))
+    # print(type(int(D[0])))
+    # print(bytearray(D[0].encode()))
+    # for i in range(0,d):
+    #     print(D[i])
+
+    #     bus.write_byte(int(D[i],16),V[i])
+    #     # bus.write_byte(int(D[1],16),V[0])
+    #     time.sleep(2)
+    #     bus.write_byte(int(D[i],16),0x00)
+    #     # bus.write_byte(int(D[1],16),0x00)
+    #     time.sleep(2)
+
+
+
+
+
+
+
+
