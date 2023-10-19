@@ -40,7 +40,7 @@ class RelayController:                                                      #cre
         module_num = (rly_num - 1) // 8                                         #To determine the  I2C module to be trigerred
         pin_num = (rly_num - 1) % 8                                             #To determine the pin number.
 
-        if module_num >= len(self.D):
+        if module_num >= len(self.D):                                           #handling exception if relay is out of range
             print("Failed! Relay number out of range.")                        
             return
 
@@ -63,7 +63,7 @@ class RelayController:                                                      #cre
             self.bus.write_byte(int(self.D[i], 16), 0xFF)
             time.sleep(0.3)                                                      #delay between turn off each module 300ms
 
-if __name__ == "__main__":
+if __name__ == "__main__":                                                      #for importing the included methods into other files/programs
     controller = RelayController()
     num_devices = int(input("Enter the number of I2C devices: "))
     controller.initialize(num_devices)
@@ -75,5 +75,5 @@ if __name__ == "__main__":
             controller.process_command(command)
 
     except KeyboardInterrupt:
-        controller.cleanup()
+        controller.cleanup()                                                    #clean all the relay bits before exiting the program
         print("\nInterrupted")
