@@ -21,10 +21,9 @@ class RelayController:                                                      #cre
             print("Wrong instruction! Please review the command format.")   #Address value length must be >=3
             return
 
-        fst_ltr = command[0]                                                
-        rly_num = command[1:-1]                                                 #relay number
-        lst_ltr = command[-1]                                                   #on off command
-
+        fst_ltr = command[0]                                                    #index 0 determines relay
+        rly_num = command[1:-1]                                                 #index 1 to (length of list-1) determines the relay number
+        lst_ltr = command[-1]                                                   #last index determines ON and OFF instruction
         if not (fst_ltr.lower() == "r" and (lst_ltr.lower() in ["n", "f"])):    #enter "r" followed by relay number to turn on or turn off relay.
             print("Wrong instruction! Please review the command format.")
             return
@@ -38,39 +37,38 @@ class RelayController:                                                      #cre
             print("Failed! Relay number out of range.")                        #if entered relay value is 0
             return
 
-        module_num = (rly_num - 1) // 8
-        pin_num = (rly_num - 1) % 8                                            #to check which relay needs to trigger
+        module_num = (rly_num - 1) // 8                                         #To determine the  I2C module to be trigerred
+        pin_num = (rly_num - 1) % 8                                             #To determine the pin number.
 
         if module_num >= len(self.D):
-            print("Failed! Relay number out of range.")                        #
+            print("Failed! Relay number out of range.")                        
             return
 
         print("module_num:", module_num + 1)
         print("pin_num:", pin_num + 1)
 
-        if lst_ltr.lower() == "n":
+        if lst_ltr.lower() == "n":                                               #checking for turn ON  input
             print("old", bin(self.V[module_num]))
-            self.V[module_num] &= ~(1 << pin_num)
+            self.V[module_num] &= ~(1 << pin_num)                                #leftshift 0 is done using shifting  1 and inverting and followed by AND operation
             print("new", bin(self.V[module_num]))
-            self.bus.write_byte(int(self.D[module_num], 16), self.V[module_num])
+            self.bus.write_byte(int(self.D[module_num], 16), self.V[module_num]) #sending instruction to i2c module
 
-        if lst_ltr.lower() == "f":
+        if lst_ltr.lower() == "f":                                               #checking for turn OFF input
             print("old", bin(self.V[module_num]))
-            self.V[module_num] |= (1 << pin_num)
-            print("new", bin(self.V[module_num]))
-            self.bus.write_byte(int(self.D[module_num], 16), self.V[module_num])
+            self.V[module_num] |= (1 << pin_num)                                 #l#leftshift 0 is done using shifting  1 and inverting and followed by OR operation
+            self.bus.write_byte(int(self.D[module_num], 16), self.V[module_num]) #sending instruction to i2c module
 
-    def cleanup(self):
+    def cleanup(self):                                                           #turn OFF all the relays before closing the program
         for i in range(len(self.D)):
             self.bus.write_byte(int(self.D[i], 16), 0xFF)
-            time.sleep(0.3)
+            time.sleep(0.3)                                                      #delay between turn off each module 300ms
 
 if __name__ == "__main__":
     controller = RelayController()
     num_devices = int(input("Enter the number of I2C devices: "))
     controller.initialize(num_devices)
 
-    try:
+    try:                                                                       #handling exception when program interrupted
         while True:
             command = input("Enter Relay command (format: RxxN or RxxF): ")
             print(command)
