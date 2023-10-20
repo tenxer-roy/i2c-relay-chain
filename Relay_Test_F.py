@@ -55,7 +55,7 @@ class RelayController:                                                      #cre
 
         if lst_ltr.lower() == "f":                                               #checking for turn OFF input
             print("old", bin(self.V[module_num]))
-            self.V[module_num] |= (1 << pin_num)                                 #l#leftshift 0 is done using shifting  1 and inverting and followed by OR operation
+            self.V[module_num] |= (1 << pin_num)                                 #leftshift 1 is done followed by OR operation
             self.bus.write_byte(int(self.D[module_num], 16), self.V[module_num]) #sending instruction to i2c module
 
     def cleanup(self):                                                           #turn OFF all the relays before closing the program
@@ -68,7 +68,7 @@ if __name__ == "__main__":                                                      
     num_devices = int(input("Enter the number of I2C devices: "))
     controller.initialize(num_devices)
 
-    try:                                                                       #handling exception when program interrupted
+    try:                                                                       #running the infinite loop
         while True:
             command = input("Enter Relay command (format: RxxN or RxxF): ")
             print(command)
