@@ -1,5 +1,5 @@
 # i2c-relay-chain
-Managing upto 64 different relay channels using PCF8574 I2c Expander and Raspberry Pi 4
+Managing upto 64 different relay channels using PCF8574 I2c Expander and Raspberry Pi 4. 
 
 ### Directory structure:
 * i2ctest.py - I2C-Pi communication demo.<br>
