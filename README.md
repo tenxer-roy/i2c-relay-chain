@@ -4,7 +4,7 @@ Managing upto 64 different relay channels using PCF8574 I2c Expander and Raspber
 ### Directory structure:
 * i2ctest.py - I2C-Pi communication demo.<br>
 * **Relay_Test_F.py** -  OOPS version of main code.<br>
-* txr_i2c_relay_drv.py - relay driver package. modified version of **Relay_Test_F.py**.<br>
+* txr_i2c_relay_drv.py - Relay driver package. modified version of **Relay_Test_F.py**.<br>
 * Relay_Trigger.py - The first iteration of main code.<br>
 * Relay_Trigger.py.bak - Backup file, previous iteration.<br><br>
 
